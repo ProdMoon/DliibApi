@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DliibApi.Data;
 using Microsoft.AspNetCore.Authorization;
+using DliibApi.Models;
 
 namespace DliibApi.Controllers.Api;
 
@@ -10,11 +11,20 @@ namespace DliibApi.Controllers.Api;
 public class DliibController(AppDbContext db) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Dliib>>> GetDliibs()
+    public async Task<ActionResult<IEnumerable<DliibModel>>> GetDliibs()
     {
         return await db.Dliibs
             .Include(x => x.Author)
             .OrderByDescending(x => x.Id)
+            .Select(x => new DliibModel
+            {
+                Id = x.Id,
+                Content = x.Content,
+                Likes = x.Likes,
+                Dislikes = x.Dislikes,
+                CreatedAt = x.CreatedAt,
+                AuthorNickName = x.Author != null ? x.Author.NickName : "익명"
+            })
             .ToListAsync();
     }
 
