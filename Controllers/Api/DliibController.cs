@@ -28,6 +28,25 @@ public class DliibController(AppDbContext db) : ControllerBase
             .ToListAsync();
     }
 
+    [HttpGet("my")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<DliibModel>>> GetMyDliibs()
+    {
+        var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == User.Identity.Name);
+        return await db.Dliibs
+            .Where(x => x.Author == user)
+            .OrderByDescending(x => x.Id)
+            .Select(x => new DliibModel
+            {
+                Id = x.Id,
+                Content = x.Content,
+                Likes = x.Likes,
+                Dislikes = x.Dislikes,
+                CreatedAt = x.CreatedAt,
+            })
+            .ToListAsync();
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Dliib>> GetDliib(int id)
     {
