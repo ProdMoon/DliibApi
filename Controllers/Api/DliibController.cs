@@ -102,12 +102,19 @@ public class DliibController(AppDbContext db) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteDliib(int id)
     {
         var dliib = await db.Dliibs.FindAsync(id);
         if (dliib == null)
         {
             return NotFound();
+        }
+
+        var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == User.Identity.Name);
+        if (dliib.Author != user)
+        {
+            return Unauthorized();
         }
 
         db.Dliibs.Remove(dliib);
