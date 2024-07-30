@@ -32,6 +32,10 @@ public class DliibController(AppDbContext db) : ControllerBase
     [Authorize]
     public async Task<ActionResult<IEnumerable<DliibModel>>> GetMyDliibs()
     {
+        if (User.Identity == null)
+        {
+            return Unauthorized();
+        }
         var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == User.Identity.Name);
         return await db.Dliibs
             .Where(x => x.Author == user)
@@ -93,6 +97,10 @@ public class DliibController(AppDbContext db) : ControllerBase
     [Authorize]
     public async Task<ActionResult<Dliib>> PostDliib(Dliib dliib)
     {
+        if (User.Identity == null)
+        {
+            return Unauthorized();
+        }
         var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == User.Identity.Name);
         dliib.Author = user;
         db.Dliibs.Add(dliib);
@@ -111,6 +119,10 @@ public class DliibController(AppDbContext db) : ControllerBase
             return NotFound();
         }
 
+        if (User.Identity == null)
+        {
+            return Unauthorized();
+        }
         var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == User.Identity.Name);
         if (dliib.Author != user)
         {
