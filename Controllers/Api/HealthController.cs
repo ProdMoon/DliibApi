@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DliibApi.Controllers.Api;
@@ -7,8 +8,8 @@ namespace DliibApi.Controllers.Api;
 public class HealthController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get()
+    public HttpStatusCode Get()
     {
-        return Ok("good");
+        return HttpStatusCode.OK;
     }
 }
