@@ -1,6 +1,6 @@
-namespace DliibApi.Models;
+namespace DliibApi.Dtos;
 
-public class DliibModel
+public class DliibDto
 {
     public int Id { get; set; }
     public string Content { get; set; } = null!;
