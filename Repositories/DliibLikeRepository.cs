@@ -5,10 +5,10 @@ namespace DliibApi.Repositories;
 
 public class DliibLikeRepository(AppDbContext db)
 {
-    public async Task<int> Like(int dliibId, string userName)
+    public async Task<int> Like(int dliibId, string userId)
     {
-        var dliib = await db.Dliibs.FirstOrDefaultAsync(x => x.Id == dliibId);
-        var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == userName);
+        var dliib = await db.Dliibs.FindAsync(dliibId);
+        var user = await db.Users.FindAsync(userId);
         if (dliib == null || user == null)
         {
             return 0;
@@ -32,10 +32,10 @@ public class DliibLikeRepository(AppDbContext db)
         return await db.SaveChangesAsync();
     }
 
-    public async Task<int> Dislike(int dliibId, string userName)
+    public async Task<int> Dislike(int dliibId, string userId)
     {
-        var dliib = await db.Dliibs.FirstOrDefaultAsync(x => x.Id == dliibId);
-        var user = await db.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == userName);
+        var dliib = await db.Dliibs.FindAsync(dliibId);
+        var user = await db.Users.FindAsync(userId);
         if (dliib == null || user == null)
         {
             return 0;
@@ -59,18 +59,18 @@ public class DliibLikeRepository(AppDbContext db)
         return await db.SaveChangesAsync();
     }
 
-    public async Task<int?> GetLikeId(int dliibId, string userName)
+    public async Task<int?> GetLikeId(int dliibId, string userId)
     {
         return await db.DliibLikes
-            .Where(x => x.Dliib.Id == dliibId && x.User.NormalizedUserName == userName)
+            .Where(x => x.Dliib.Id == dliibId && x.User.Id == userId)
             .Select(x => x.Id)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<int?> GetDislikeId(int dliibId, string userName)
+    public async Task<int?> GetDislikeId(int dliibId, string userId)
     {
         return await db.DliibDislikes
-            .Where(x => x.Dliib.Id == dliibId && x.User.NormalizedUserName == userName)
+            .Where(x => x.Dliib.Id == dliibId && x.User.Id == userId)
             .Select(x => x.Id)
             .FirstOrDefaultAsync();
     }

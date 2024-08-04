@@ -7,18 +7,6 @@ namespace DliibApi.Repositories;
 
 public class DliibRepository(AppDbContext db, IMapper mapper)
 {
-    public async Task<IEnumerable<DliibDto>> GetAllDliibDtos()
-    {
-        var dliibs = await db.Dliibs
-            .Include(x => x.Author)
-            .Include(x => x.Likes)
-            .Include(x => x.Dislikes)
-            .OrderByDescending(x => x.Id)
-            .ToListAsync();
-        
-        return mapper.Map<List<DliibDto>>(dliibs);
-    }
-
     public async Task<IEnumerable<Dliib>> GetAllDliibs()
     {
         return await db.Dliibs
@@ -29,16 +17,13 @@ public class DliibRepository(AppDbContext db, IMapper mapper)
             .ToListAsync();
     }
 
-    public async Task<DliibDto> GetDliibDto(int id)
-    {
-        var dliib = await db.Dliibs.FindAsync(id);
-
-        return mapper.Map<DliibDto>(dliib);
-    }
-
     public async Task<Dliib?> GetDliib(int id)
     {
-        return await db.Dliibs.FindAsync(id);
+        return await db.Dliibs
+            .Include(x => x.Author)
+            .Include(x => x.Likes)
+            .Include(x => x.Dislikes)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IEnumerable<DliibDto>> GetUserDliibDtos(string userId)

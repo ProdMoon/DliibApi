@@ -8,14 +8,14 @@ public class DliibLikeService(DliibLikeRepository dliibLikeRepository, UserRepos
     {
         var userId = (await userRepository.GetUserByName(userName))?.Id;
         var likeId = await dliibLikeRepository.GetLikeId(dliibId, userId);
-        if (likeId != null)
+        if (likeId > 0)
         {
             await dliibLikeRepository.CancelLike(likeId.Value);
             return;
         }
 
         var dislikeId = await dliibLikeRepository.GetDislikeId(dliibId, userId);
-        if (dislikeId != null)
+        if (dislikeId > 0)
         {
             await dliibLikeRepository.CancelDislike(dislikeId.Value);
         }
@@ -29,14 +29,14 @@ public class DliibLikeService(DliibLikeRepository dliibLikeRepository, UserRepos
     {
         var userId = (await userRepository.GetUserByName(userName))?.Id;
         var dislikeId = await dliibLikeRepository.GetDislikeId(dliibId, userId);
-        if (dislikeId != null)
+        if (dislikeId > 0)
         {
             await dliibLikeRepository.CancelDislike(dislikeId.Value);
             return;
         }
 
         var likeId = await dliibLikeRepository.GetLikeId(dliibId, userId);
-        if (likeId != null)
+        if (likeId > 0)
         {
             await dliibLikeRepository.CancelLike(likeId.Value);
         }

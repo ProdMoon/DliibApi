@@ -12,7 +12,7 @@ public class DliibController(DliibService dliibService, UserService userService)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DliibDto>>> GetDliibs()
     {
-        return Ok(await dliibService.GetAllDliibDtos());
+        return Ok(await dliibService.GetAllDliibDtos(User.Identity?.Name));
     }
 
     [HttpGet("my")]
@@ -30,7 +30,7 @@ public class DliibController(DliibService dliibService, UserService userService)
     [HttpGet("{id}")]
     public async Task<ActionResult<DliibDto>> GetDliib(int id)
     {
-        return Ok(await dliibService.GetDliibDto(id));
+        return Ok(await dliibService.GetDliibDto(id, User.Identity?.Name));
     }
 
     [HttpPut]

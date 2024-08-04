@@ -7,9 +7,23 @@ namespace DliibApi.Services;
 
 public class DliibService(DliibRepository dliibRepository, UserRepository userRepository, IMapper mapper)
 {
-    public async Task<IEnumerable<DliibDto>> GetAllDliibDtos()
+    public async Task<IEnumerable<DliibDto>> GetAllDliibDtos(string? userName)
     {
-        return await dliibRepository.GetAllDliibDtos();
+        var dliibs = await dliibRepository.GetAllDliibs();
+        var dliibDtos = mapper.Map<List<DliibDto>>(dliibs);
+        if (userName == null)
+        {
+            return dliibDtos;
+        }
+
+        var user = await userRepository.GetUserByName(userName);
+        foreach (var dliibDto in dliibDtos)
+        {
+            dliibDto.IsLiked = dliibs.Where(x => x.Id == dliibDto.Id).Any(x => x.Likes.Any(y => y.User == user));
+            dliibDto.IsDisliked = dliibs.Where(x => x.Id == dliibDto.Id).Any(x => x.Dislikes.Any(y => y.User == user));
+        }
+
+        return dliibDtos;
     }
 
     public async Task<IEnumerable<DliibDto>> GetUserDliibDtos(string userName)
@@ -19,9 +33,26 @@ public class DliibService(DliibRepository dliibRepository, UserRepository userRe
         return await dliibRepository.GetUserDliibDtos(userId);
     }
 
-    public async Task<DliibDto> GetDliibDto(int id)
+    public async Task<DliibDto> GetDliibDto(int id, string? userName)
     {
-        return await dliibRepository.GetDliibDto(id);
+        var dliib = await dliibRepository.GetDliib(id);
+        if (dliib == null)
+        {
+            return null;
+        }
+
+        var dliibDto = mapper.Map<DliibDto>(dliib);
+
+        if (userName == null)
+        {
+            return dliibDto;
+        }
+
+        var user = await userRepository.GetUserByName(userName);
+        dliibDto.IsLiked = dliib.Likes.Any(x => x.User == user);
+        dliibDto.IsDisliked = dliib.Dislikes.Any(x => x.User == user);
+
+        return dliibDto;
     }
 
     public async Task<Dliib?> GetDliib(int id)
