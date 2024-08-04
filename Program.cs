@@ -1,6 +1,9 @@
 using DliibApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using DliibApi.AutoMapperProfiles;
+using DliibApi.Services;
+using DliibApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,16 @@ builder.Services.Configure<IdentityOptions>(options =>
 // Controllers
 builder.Services.AddControllers();
 
+// Services
+builder.Services.AddScoped<DliibLikeService>();
+builder.Services.AddScoped<DliibService>();
+builder.Services.AddScoped<UserService>();
+
+// Repositories
+builder.Services.AddScoped<DliibLikeRepository>();
+builder.Services.AddScoped<DliibRepository>();
+builder.Services.AddScoped<UserRepository>();
+
 // CORS
 builder.Services.AddCors(options =>
 {
@@ -44,6 +57,9 @@ builder.Services.AddCors(options =>
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(DliibProfile));
 
 /* BUILD */
 var app = builder.Build();

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using DliibApi.Data;
-using DliibApi.Models;
+using DliibApi.Dtos;
 
 namespace DliibApi.Controllers.Api;
 
@@ -28,7 +28,7 @@ public class AuthController(UserManager<DliibUser> userManager, SignInManager<Dl
     }
 
     [HttpPost("signup")]
-    public async Task<IActionResult> Signup([FromBody] SignupModel model)
+    public async Task<IActionResult> Signup([FromBody] SignupDto model)
     {
         if (ModelState.IsValid)
         {

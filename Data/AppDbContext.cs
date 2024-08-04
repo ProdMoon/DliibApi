@@ -10,4 +10,6 @@ public class AppDbContext : IdentityDbContext<DliibUser>
     }
 
     public DbSet<Dliib> Dliibs { get; set; }
+    public DbSet<DliibLike> DliibLikes { get; set; }
+    public DbSet<DliibDislike> DliibDislikes { get; set; }
 }

@@ -1,6 +1,6 @@
-namespace DliibApi.Models;
+namespace DliibApi.Dtos;
 
-public class SignupModel
+public class SignupDto
 {
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
