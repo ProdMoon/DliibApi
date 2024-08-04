@@ -1,10 +1,11 @@
+using AutoMapper;
 using DliibApi.Data;
 using DliibApi.Dtos;
 using DliibApi.Repositories;
 
 namespace DliibApi.Services;
 
-public class DliibService(DliibRepository dliibRepository, UserRepository userRepository)
+public class DliibService(DliibRepository dliibRepository, UserRepository userRepository, IMapper mapper)
 {
     public async Task<IEnumerable<DliibDto>> GetAllDliibDtos()
     {
@@ -28,9 +29,20 @@ public class DliibService(DliibRepository dliibRepository, UserRepository userRe
         return await dliibRepository.GetDliib(id);
     }
 
-    public async Task<DliibDto> CreateDliib(DliibDto dliibDto)
+    public async Task<DliibDto> CreateDliib(DliibDto dliibDto, string userName)
     {
-        return await dliibRepository.Create(dliibDto);
+        var user = await userRepository.GetUserByName(userName);
+        if (user == null)
+        {
+            return null;
+        }
+
+        var dliib = mapper.Map<Dliib>(dliibDto);
+        dliib.Author = user;
+        
+        await dliibRepository.Create(dliib);
+
+        return mapper.Map<DliibDto>(dliib);
     }
 
     public async Task<DliibDto> UpdateDliib(DliibDto dliibDto)

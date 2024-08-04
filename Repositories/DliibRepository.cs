@@ -54,13 +54,11 @@ public class DliibRepository(AppDbContext db, IMapper mapper)
         return mapper.Map<List<DliibDto>>(dliibs);
     }
 
-    public async Task<DliibDto> Create(DliibDto dliibDto)
+    public async Task<int> Create(Dliib dliib)
     {
-        var dliib = mapper.Map<Dliib>(dliibDto);
         db.Dliibs.Add(dliib);
-        await db.SaveChangesAsync();
-
-        return mapper.Map<DliibDto>(dliib);
+        
+        return await db.SaveChangesAsync();
     }
 
     public async Task<DliibDto> Update(DliibDto dliibDto)

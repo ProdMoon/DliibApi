@@ -68,7 +68,7 @@ public class DliibController(DliibService dliibService, UserService userService)
             return Unauthorized();
         }
 
-        return CreatedAtAction("GetDliib", new { id = dliibDto.Id }, await dliibService.CreateDliib(dliibDto));
+        return CreatedAtAction("GetDliib", new { id = dliibDto.Id }, await dliibService.CreateDliib(dliibDto, User.Identity.Name));
     }
 
     [HttpDelete("{id}")]

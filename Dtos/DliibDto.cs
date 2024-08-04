@@ -6,6 +6,6 @@ public class DliibDto
     public string Content { get; set; } = null!;
     public int Likes { get; set; }
     public int Dislikes { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string AuthorNickName { get; set; } = null!;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(9);
+    public string? AuthorNickName { get; set; }
 }
