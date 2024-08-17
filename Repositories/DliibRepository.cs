@@ -11,6 +11,7 @@ public class DliibRepository(AppDbContext db, IMapper mapper)
     {
         return await db.Dliibs
             .Include(x => x.Author)
+            .Include(x => x.Contents)
             .Include(x => x.Likes)
             .Include(x => x.Dislikes)
             .OrderByDescending(x => x.Id)
@@ -21,6 +22,7 @@ public class DliibRepository(AppDbContext db, IMapper mapper)
     {
         return await db.Dliibs
             .Include(x => x.Author)
+            .Include(x => x.Contents)
             .Include(x => x.Likes)
             .Include(x => x.Dislikes)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -30,6 +32,7 @@ public class DliibRepository(AppDbContext db, IMapper mapper)
     {
         var dliibs = await db.Dliibs
             .Include(x => x.Author)
+            .Include(x => x.Contents)
             .Include(x => x.Likes)
             .Include(x => x.Dislikes)
             .Where(x => x.Author != null && x.Author.Id == userId)
