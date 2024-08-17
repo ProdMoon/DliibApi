@@ -3,7 +3,7 @@ namespace DliibApi.Dtos;
 public class DliibDto
 {
     public int Id { get; set; }
-    public string Content { get; set; } = null!;
+    public List<string> Contents { get; set; } = null!;
     public int Likes { get; set; }
     public int Dislikes { get; set; }
     public bool IsLiked { get; set; }
