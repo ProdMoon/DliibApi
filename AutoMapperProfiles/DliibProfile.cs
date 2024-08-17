@@ -15,7 +15,6 @@ public class DliibProfile : Profile
             .ForMember(dest => dest.AuthorNickName, opt => opt.MapFrom(src => src.Author != null ? src.Author.NickName : "익명"));
 
         CreateMap<DliibDto, Dliib>()
-            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Contents.FirstOrDefault()))
             .ForMember(dest => dest.Contents, opt => opt.MapFrom(src => src.Contents.Select((x, i) => new DliibContent { Content = x, Order = i })));
     }
 }

@@ -6,8 +6,6 @@ namespace DliibApi.Data;
 public class Dliib
 {
     public int Id { get; set; }
-    [Obsolete("Use Contents instead.")]
-    public string Content { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(9);
     public DliibUser? Author { get; set; }
     public List<DliibContent> Contents { get; set; } = [];
