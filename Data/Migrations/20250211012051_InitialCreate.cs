@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DliibApi.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class MysqlInit : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -204,10 +204,6 @@ namespace DliibApi.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Likes = table.Column<int>(type: "int", nullable: false),
-                    Dislikes = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     AuthorId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -220,6 +216,83 @@ namespace DliibApi.Data.Migrations
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DliibContents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    DliibId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DliibContents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DliibContents_Dliibs_DliibId",
+                        column: x => x.DliibId,
+                        principalTable: "Dliibs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DliibDislikes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DliibId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DliibDislikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DliibDislikes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DliibDislikes_Dliibs_DliibId",
+                        column: x => x.DliibId,
+                        principalTable: "Dliibs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DliibLikes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DliibId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DliibLikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DliibLikes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DliibLikes_Dliibs_DliibId",
+                        column: x => x.DliibId,
+                        principalTable: "Dliibs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -261,6 +334,31 @@ namespace DliibApi.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DliibContents_DliibId",
+                table: "DliibContents",
+                column: "DliibId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DliibDislikes_DliibId",
+                table: "DliibDislikes",
+                column: "DliibId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DliibDislikes_UserId",
+                table: "DliibDislikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DliibLikes_DliibId",
+                table: "DliibLikes",
+                column: "DliibId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DliibLikes_UserId",
+                table: "DliibLikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Dliibs_AuthorId",
                 table: "Dliibs",
                 column: "AuthorId");
@@ -290,10 +388,19 @@ namespace DliibApi.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Dliibs");
+                name: "DliibContents");
+
+            migrationBuilder.DropTable(
+                name: "DliibDislikes");
+
+            migrationBuilder.DropTable(
+                name: "DliibLikes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Dliibs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

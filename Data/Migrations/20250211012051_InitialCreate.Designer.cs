@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DliibApi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240707071703_MysqlInit")]
-    partial class MysqlInit
+    [Migration("20250211012051_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,18 +36,8 @@ namespace DliibApi.Data.Migrations
                     b.Property<string>("AuthorId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Dislikes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Likes")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -56,6 +46,77 @@ namespace DliibApi.Data.Migrations
                     b.HasIndex("CreatedAt");
 
                     b.ToTable("Dliibs");
+                });
+
+            modelBuilder.Entity("DliibApi.Data.DliibContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("DliibId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DliibId");
+
+                    b.ToTable("DliibContents");
+                });
+
+            modelBuilder.Entity("DliibApi.Data.DliibDislike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DliibId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DliibId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DliibDislikes");
+                });
+
+            modelBuilder.Entity("DliibApi.Data.DliibLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DliibId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DliibId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DliibLikes");
                 });
 
             modelBuilder.Entity("DliibApi.Data.DliibUser", b =>
@@ -268,6 +329,51 @@ namespace DliibApi.Data.Migrations
                     b.Navigation("Author");
                 });
 
+            modelBuilder.Entity("DliibApi.Data.DliibContent", b =>
+                {
+                    b.HasOne("DliibApi.Data.Dliib", "Dliib")
+                        .WithMany("Contents")
+                        .HasForeignKey("DliibId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dliib");
+                });
+
+            modelBuilder.Entity("DliibApi.Data.DliibDislike", b =>
+                {
+                    b.HasOne("DliibApi.Data.Dliib", "Dliib")
+                        .WithMany("Dislikes")
+                        .HasForeignKey("DliibId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DliibApi.Data.DliibUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dliib");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DliibApi.Data.DliibLike", b =>
+                {
+                    b.HasOne("DliibApi.Data.Dliib", "Dliib")
+                        .WithMany("Likes")
+                        .HasForeignKey("DliibId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DliibApi.Data.DliibUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dliib");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -317,6 +423,15 @@ namespace DliibApi.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DliibApi.Data.Dliib", b =>
+                {
+                    b.Navigation("Contents");
+
+                    b.Navigation("Dislikes");
+
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }

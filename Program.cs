@@ -13,8 +13,7 @@ builder.Configuration.AddJsonFile("appsecrets.json", optional: true, reloadOnCha
 /* CONFIGURATION */
 // Database
 var mysqlConnectionString = builder.Configuration.GetConnectionString("MysqlConnection");
-var mysqlServerVersion = new MySqlServerVersion(new Version(8, 0, 38));
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mysqlConnectionString, mysqlServerVersion));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mysqlConnectionString, ServerVersion.AutoDetect(mysqlConnectionString)));
 
 // Identity
 builder.Services.AddAuthorization();
